@@ -31,7 +31,7 @@ let ticking = false
 function updateHud() {
   const progress = Math.min(1, window.scrollY / Math.max(1, document.documentElement.scrollHeight - window.innerHeight))
   hud.classList.toggle('is-visible', window.scrollY > window.innerHeight * 0.55)
-  depthValue.textContent = String(Math.round(progress * 420))
+  depthValue.textContent = String(Math.round(progress * 520))
   oxygenFill.style.transform = `scaleX(${1 - progress * 0.22})`
   if (window.scrollY > 20) musicHint.classList.add('is-hidden')
   ticking = false
