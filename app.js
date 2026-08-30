@@ -1,4 +1,4 @@
-const weddingDate = new Date('2030-10-01T11:58:00+08:00')
+const weddingDate = new Date('2026-10-01T16:58:00+08:00')
 // 需要真实收集宾客名单时，只需粘贴第三方表单的公开填写链接；留空则保持本地演示模式。
 const RSVP_FORM_URL = ''
 document.querySelector('#days-count').textContent = String(Math.max(0, Math.ceil((weddingDate.getTime() - Date.now()) / 86400000)))
@@ -172,13 +172,13 @@ if (publicRsvpUrl) {
   function updateAccommodation() {
     const needed = rsvpForm.elements.needsAccommodation.value === 'yes'
     accommodationDates.hidden = !needed; rsvpForm.elements.checkInAt.required = needed; rsvpForm.elements.checkOutAt.required = needed
-    if (needed) { rsvpForm.elements.checkInAt.value ||= '2030-09-30T14:00'; rsvpForm.elements.checkOutAt.value ||= '2030-10-01T12:00' }
+    if (needed) { rsvpForm.elements.checkInAt.value ||= '2026-09-30T14:00'; rsvpForm.elements.checkOutAt.value ||= '2026-10-02T12:00' }
   }
   function fillRsvp(data) {
     if (!data) return
     rsvpForm.elements.guestName.value = data.guestName || ''; rsvpForm.elements.partySize.value = String(data.partySize || 1); rsvpForm.elements.phone.value = data.phone || ''; rsvpForm.elements.message.value = data.message || ''
     const choice = rsvpForm.querySelector(`[name="needsAccommodation"][value="${data.needsAccommodation ? 'yes' : 'no'}"]`); if (choice) choice.checked = true
-    rsvpForm.elements.checkInAt.value = data.checkInAt || '2030-09-30T14:00'; rsvpForm.elements.checkOutAt.value = data.checkOutAt || '2030-10-01T12:00'; messageCount.value = String(rsvpForm.elements.message.value.length); updateAccommodation()
+    rsvpForm.elements.checkInAt.value = data.checkInAt || '2026-09-30T14:00'; rsvpForm.elements.checkOutAt.value = data.checkOutAt || '2026-10-02T12:00'; messageCount.value = String(rsvpForm.elements.message.value.length); updateAccommodation()
   }
   function showRsvpError(message) { rsvpError.textContent = message; rsvpError.hidden = false }
   function collectRsvp() {
