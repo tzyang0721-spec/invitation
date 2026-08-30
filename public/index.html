@@ -101,14 +101,15 @@
         <div class="rsvp-phone reveal">
           <div class="app-bar"><span>◉</span><b>WEDDING MISSION</b><small>LOCAL DEMO</small></div>
           <form id="rsvp-form" novalidate>
-            <p class="demo-notice">DEMO MODE · 登记内容只保存在当前浏览器，不会上传到服务器</p>
+            <p class="demo-notice">登记将保存到本邀请函专用的 Cloudflare D1 数据库，仅供新人查看；不会发送给第三方服务。</p>
             <label><span>宾客姓名 <b>*</b></span><input name="guestName" maxlength="30" autocomplete="name" required placeholder="请输入姓名" /></label>
             <label><span>出席人数 <b>*</b></span><select name="partySize"><option value="1">1 人</option><option value="2">2 人</option><option value="3">3 人</option><option value="4">4 人</option><option value="5">5 人</option><option value="6">6 人</option></select></label>
             <fieldset id="accommodation-field"><legend>是否需要住宿 <b>*</b></legend><div class="choice-row"><label><input type="radio" name="needsAccommodation" value="no" checked /><span>不需要</span></label><label><input type="radio" name="needsAccommodation" value="yes" /><span>需要住宿</span></label></div></fieldset>
             <div class="date-fields" id="accommodation-dates" hidden><label><span>入住时间</span><input type="datetime-local" name="checkInAt" value="2026-09-30T14:00" /></label><label><span>退房时间</span><input type="datetime-local" name="checkOutAt" value="2026-10-01T12:00" /></label></div>
             <label><span>联系电话</span><input name="phone" maxlength="20" inputmode="tel" autocomplete="tel" placeholder="方便新人联系（选填）" /></label>
             <label><span>发送给新人的声呐留言</span><textarea name="message" maxlength="200" rows="4" placeholder="写一句祝福吧（选填）"></textarea><small><output id="message-count">0</output>/200</small></label>
-            <p class="form-error" id="rsvp-error" role="alert" hidden></p><button class="submit-button" type="submit"><span>保存赴约信息</span><b>▶</b></button>
+            <label class="privacy-consent"><input type="checkbox" name="privacyConsent" required /><span>我同意将本表单信息用于本次婚礼的宾客登记、联络和住宿安排。</span></label>
+            <p class="form-error" id="rsvp-error" role="alert" hidden></p><button class="submit-button" type="submit"><span>提交赴约信息</span><b>▶</b></button>
           </form>
           <div class="rsvp-success" id="rsvp-success" tabindex="-1" hidden><div class="success-radar"><i></i><b>✓</b></div><h3 id="rsvp-success-title">登记成功</h3><p id="rsvp-success-summary"></p><button id="rsvp-edit" type="button">修改登记信息</button></div>
           <div class="rsvp-external" id="rsvp-external" hidden><div class="success-radar"><i></i><b>↗</b></div><h3>宾客登记已开启</h3><p>点击下方按钮填写赴约信息。提交后，新人可以在表单后台统一查看和导出名单。</p><a id="rsvp-external-link" href="#" target="_blank" rel="noopener noreferrer">填写赴约信息 <span>↗</span></a></div>

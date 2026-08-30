@@ -2,7 +2,19 @@
 
 一份专为手机设计的互动婚礼请柬 Demo。宾客会像接受游戏任务一样打开邀请函，经历下潜、领取委托、声呐探索、捕捉祝福鱼、查看婚礼日程与地图，最后完成宾客登记。
 
-无需安装框架或运行构建命令，项目只使用 HTML、CSS 和 JavaScript。完全没有编程经验，也可以按照教程替换成自己的内容。
+当前版本使用 Cloudflare Workers 托管页面，并用 Cloudflare D1 保存真实宾客登记；页面和登记接口使用同一个域名。完全没有编程经验，也可以按照教程替换成自己的内容。
+
+## Cloudflare D1（已接入代码，首次需在后台连接）
+
+宾客姓名、人数、住宿、电话和留言会保存到你的 Cloudflare D1 数据库，仅由你的 Cloudflare 账号管理；代码不会向第三方表单服务发送这些信息。访客在提交后可在自己的浏览器保存一份修改凭据，用来修改自己的记录。
+
+在 Cloudflare 的 **Workers & Pages** 中创建或连接一个 Worker，并将其名称设置为 `deep-sea-wedding-invitation`；随后连接本仓库并设置生产分支为 `main`。Cloudflare 将在每次推送后执行：
+
+```text
+npm run db:migrate:remote && wrangler deploy
+```
+
+该命令会创建/绑定 `DB`（D1）并执行 `migrations/0001_create_wedding_rsvps.sql`。数据可在 Cloudflare 控制台的 **Storage & Databases → D1** 查看；如需导出，可在该数据库的控制台执行 SQL 查询后下载结果。
 
 > 🌊 [立即体验在线 Demo](https://blue-hole-wedding-invitation-demo.pages.dev/)
 

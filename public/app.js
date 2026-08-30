@@ -146,18 +146,7 @@ document.querySelector('#start-mission').addEventListener('click', () => { playM
 
 const rsvpForm = document.querySelector('#rsvp-form')
 const rsvpSuccess = document.querySelector('#rsvp-success')
-const rsvpExternal = document.querySelector('#rsvp-external')
-const rsvpExternalLink = document.querySelector('#rsvp-external-link')
-const rsvpStatus = document.querySelector('.rsvp-phone .app-bar small')
-const publicRsvpUrl = RSVP_FORM_URL.trim()
-
-if (publicRsvpUrl) {
-  rsvpForm.hidden = true
-  rsvpSuccess.hidden = true
-  rsvpExternal.hidden = false
-  rsvpExternalLink.href = publicRsvpUrl
-  rsvpStatus.textContent = 'ONLINE'
-} else if (rsvpForm) {
+if (rsvpForm) {
   const accommodationDates = document.querySelector('#accommodation-dates')
   const accommodationField = document.querySelector('#accommodation-field')
   const messageField = rsvpForm.elements.message
@@ -166,7 +155,7 @@ if (publicRsvpUrl) {
   const rsvpSuccessTitle = document.querySelector('#rsvp-success-title')
   const rsvpSuccessSummary = document.querySelector('#rsvp-success-summary')
   const rsvpSubmit = rsvpForm.querySelector('[type="submit"]')
-  const storageKey = 'dave-wedding-demo-rsvp'
+  const storageKey = 'deep-sea-wedding-rsvp-credentials'
   let savedRsvp
   try { savedRsvp = JSON.parse(localStorage.getItem(storageKey)) } catch { savedRsvp = undefined }
   function updateAccommodation() {
@@ -176,7 +165,7 @@ if (publicRsvpUrl) {
   }
   function fillRsvp(data) {
     if (!data) return
-    rsvpForm.elements.guestName.value = data.guestName || ''; rsvpForm.elements.partySize.value = String(data.partySize || 1); rsvpForm.elements.phone.value = data.phone || ''; rsvpForm.elements.message.value = data.message || ''
+    rsvpForm.elements.guestName.value = data.guestName || ''; rsvpForm.elements.partySize.value = String(data.partySize || 1); rsvpForm.elements.phone.value = data.phone || ''; rsvpForm.elements.message.value = data.message || ''; rsvpForm.elements.privacyConsent.checked = Boolean(data.privacyConsent)
     const choice = rsvpForm.querySelector(`[name="needsAccommodation"][value="${data.needsAccommodation ? 'yes' : 'no'}"]`); if (choice) choice.checked = true
     rsvpForm.elements.checkInAt.value = data.checkInAt || '2026-09-30T14:00'; rsvpForm.elements.checkOutAt.value = data.checkOutAt || '2026-10-02T12:00'; messageCount.value = String(rsvpForm.elements.message.value.length); updateAccommodation()
   }
@@ -184,7 +173,7 @@ if (publicRsvpUrl) {
   function collectRsvp() {
     const formData = new FormData(rsvpForm); const guestName = String(formData.get('guestName') || '').trim(); const needsAccommodation = formData.get('needsAccommodation') === 'yes'; const checkInAt = String(formData.get('checkInAt') || ''); const checkOutAt = String(formData.get('checkOutAt') || '')
     if (!guestName) throw new Error('请填写宾客姓名。'); if (needsAccommodation && (!checkInAt || !checkOutAt)) throw new Error('请填写完整的住宿时间。'); if (needsAccommodation && checkOutAt <= checkInAt) throw new Error('退房时间必须晚于入住时间。')
-    return { id: savedRsvp?.id, editToken: savedRsvp?.editToken, guestName, partySize: Number(formData.get('partySize')), needsAccommodation, checkInAt: needsAccommodation ? checkInAt : null, checkOutAt: needsAccommodation ? checkOutAt : null, phone: String(formData.get('phone') || '').trim(), message: String(formData.get('message') || '').trim() }
+    return { id: savedRsvp?.id, editToken: savedRsvp?.editToken, guestName, partySize: Number(formData.get('partySize')), needsAccommodation, checkInAt: needsAccommodation ? checkInAt : null, checkOutAt: needsAccommodation ? checkOutAt : null, phone: String(formData.get('phone') || '').trim(), message: String(formData.get('message') || '').trim(), privacyConsent: formData.get('privacyConsent') === 'on' }
   }
   rsvpForm.addEventListener('change', (event) => { if (event.target.name === 'needsAccommodation') { accommodationField.removeAttribute('aria-invalid'); updateAccommodation() } })
   messageField.addEventListener('input', () => { messageCount.value = String(messageField.value.length) })
@@ -192,13 +181,17 @@ if (publicRsvpUrl) {
     event.preventDefault(); rsvpError.hidden = true
     let submission
     try { submission = collectRsvp() } catch (error) { showRsvpError(error.message); return }
-    rsvpSubmit.disabled = true; rsvpSubmit.querySelector('span').textContent = '正在保存演示登记……'
+    rsvpSubmit.disabled = true; rsvpSubmit.querySelector('span').textContent = '正在安全提交……'
     try {
-      savedRsvp = { ...submission, id: 'demo-local-only', editToken: undefined }
+      const endpoint = submission.id && submission.editToken ? `/api/rsvp/${submission.id}` : '/api/rsvp'
+      const response = await fetch(endpoint, { method: submission.id && submission.editToken ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(submission) })
+      const result = await response.json().catch(() => ({}))
+      if (!response.ok) throw new Error(result.error || '提交失败，请稍后重试。')
+      savedRsvp = { ...submission, id: result.id || submission.id, editToken: result.editToken || submission.editToken }
       localStorage.setItem(storageKey, JSON.stringify(savedRsvp))
-      rsvpForm.hidden = true; rsvpSuccess.hidden = false; rsvpSuccessTitle.textContent = `${submission.guestName}，演示登记成功`; rsvpSuccessSummary.textContent = `已在本机保存 ${submission.partySize} 人的演示记录${submission.needsAccommodation ? ' · 已登记住宿需求' : ' · 无需住宿'}；这些内容不会上传。`; rsvpSuccess.focus({ preventScroll: true })
+      rsvpForm.hidden = true; rsvpSuccess.hidden = false; rsvpSuccessTitle.textContent = `${submission.guestName}，登记成功`; rsvpSuccessSummary.textContent = `已登记 ${submission.partySize} 人${submission.needsAccommodation ? ' · 已提交住宿需求' : ' · 无需住宿'}。你可以在这台设备上继续修改。`; rsvpSuccess.focus({ preventScroll: true })
     } catch (error) { showRsvpError(error.message || '保存失败，请检查浏览器设置后重试。') }
-    finally { rsvpSubmit.disabled = false; rsvpSubmit.querySelector('span').textContent = '保存赴约信息' }
+    finally { rsvpSubmit.disabled = false; rsvpSubmit.querySelector('span').textContent = '提交赴约信息' }
   })
   document.querySelector('#rsvp-edit').addEventListener('click', () => { fillRsvp(savedRsvp); rsvpForm.hidden = false; rsvpSuccess.hidden = true })
   fillRsvp(savedRsvp)

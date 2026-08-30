@@ -1,4 +1,4 @@
-.DS_Store
-.wrangler/
 node_modules/
-*.log
+.npm-cache/
+.wrangler/
+.dev.vars*
