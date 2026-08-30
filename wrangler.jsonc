@@ -1,9 +1,9 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "deep-sea-wedding-invitation",
+  "name": "invitation",
   "main": "./worker.js",
   "compatibility_date": "2026-08-30",
   "assets": { "directory": "./public", "binding": "ASSETS", "run_worker_first": true },
-  "d1_databases": [{ "binding": "DB", "migrations_dir": "migrations" }],
+  "d1_databases": [{ "binding": "DB", "database_name": "invitation-db", "database_id": "a08c0818-f2b7-4318-b9a6-64135d88afd5", "migrations_dir": "migrations" }],
   "observability": { "enabled": true }
 }
