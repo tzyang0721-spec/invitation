@@ -148,12 +148,17 @@ const mapOpen = document.querySelector('#map-open')
 const mapSheet = document.querySelector('#map-sheet')
 if (mapOpen && mapSheet) {
   const venue = '天津市 睦南宴会花园·宴会厅'; const encodedVenue = encodeURIComponent(venue)
-  document.querySelector('#map-system').href = `geo:0,0?q=${encodedVenue}`
-  document.querySelector('#map-baidu').href = `https://map.baidu.com/search/${encodedVenue}`
-  document.querySelector('#map-tencent').href = `https://map.qq.com/search/?keyword=${encodedVenue}`
+  const mapStatus = document.querySelector('#map-sheet-status')
+  const copyVenue = async () => {
+    try { await navigator.clipboard.writeText(venue) } catch { const field = document.createElement('textarea'); field.value = venue; field.style.position = 'fixed'; field.style.opacity = '0'; document.body.append(field); field.select(); document.execCommand('copy'); field.remove() }
+    mapStatus.textContent = '地点地址已复制，请打开常用地图 App 粘贴搜索。'; mapStatus.hidden = false
+  }
+  document.querySelector('#map-baidu').href = `https://api.map.baidu.com/geocoder?address=${encodedVenue}&output=html&src=webapp.blueholewedding`
   document.querySelector('#map-apple').href = `https://maps.apple.com/?q=${encodedVenue}`
-  const closeMapSheet = () => { mapSheet.hidden = true; mapOpen.focus() }
-  mapOpen.addEventListener('click', () => { mapSheet.hidden = false; document.querySelector('#map-system').focus() })
+  const closeMapSheet = () => { mapSheet.hidden = true; mapStatus.hidden = true; mapOpen.focus() }
+  mapOpen.addEventListener('click', () => { mapSheet.hidden = false; document.querySelector('#map-copy').focus() })
+  document.querySelector('#map-copy').addEventListener('click', copyVenue)
+  document.querySelector('#map-tencent').addEventListener('click', copyVenue)
   document.querySelector('#map-close').addEventListener('click', closeMapSheet)
   mapSheet.querySelector('[data-map-close]').addEventListener('click', closeMapSheet)
 }
