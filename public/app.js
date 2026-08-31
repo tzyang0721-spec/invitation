@@ -209,7 +209,7 @@ if (rsvpForm) {
     context.fillStyle = 'rgba(1, 21, 43, .72)'; context.fillRect(0, 0, canvas.width, canvas.height)
     context.strokeStyle = '#82f5ef'; context.lineWidth = 10; context.strokeRect(58, 58, 964, 1324)
     context.strokeStyle = '#ffe04c'; context.lineWidth = 4; context.strokeRect(80, 80, 920, 1280)
-    context.textAlign = 'center'; context.fillStyle = '#83f5ef'; context.font = '700 34px monospace'; context.fillText('BLUE HOLE WEDDING', 540, 230)
+    context.textAlign = 'center'; context.fillStyle = '#83f5ef'; context.font = '700 34px monospace'; context.fillText('OCEAN YES!', 540, 230)
     context.fillStyle = '#ffe04c'; context.font = '900 74px sans-serif'; context.fillText('赴 约 凭 证', 540, 354)
     context.fillStyle = '#eaffff'; context.font = '700 37px sans-serif'; context.fillText('SPECIAL WEDDING MISSION', 540, 426)
     context.fillStyle = 'rgba(1, 27, 51, .78)'; context.fillRect(142, 560, 796, 420)
