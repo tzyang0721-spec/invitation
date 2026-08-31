@@ -144,6 +144,20 @@ function pauseMusic() { officialBgm.pause(); setMusicState(false) }
 musicToggle.addEventListener('click', () => musicPlaying ? pauseMusic() : playMusic())
 document.querySelector('#start-mission').addEventListener('click', () => { playMusic(); document.querySelector('#briefing').scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth' }) })
 
+const mapOpen = document.querySelector('#map-open')
+const mapSheet = document.querySelector('#map-sheet')
+if (mapOpen && mapSheet) {
+  const venue = '天津市 睦南宴会花园·宴会厅'; const encodedVenue = encodeURIComponent(venue)
+  document.querySelector('#map-system').href = `geo:0,0?q=${encodedVenue}`
+  document.querySelector('#map-baidu').href = `https://map.baidu.com/search/${encodedVenue}`
+  document.querySelector('#map-tencent').href = `https://map.qq.com/search/?keyword=${encodedVenue}`
+  document.querySelector('#map-apple').href = `https://maps.apple.com/?q=${encodedVenue}`
+  const closeMapSheet = () => { mapSheet.hidden = true; mapOpen.focus() }
+  mapOpen.addEventListener('click', () => { mapSheet.hidden = false; document.querySelector('#map-system').focus() })
+  document.querySelector('#map-close').addEventListener('click', closeMapSheet)
+  mapSheet.querySelector('[data-map-close]').addEventListener('click', closeMapSheet)
+}
+
 const rsvpForm = document.querySelector('#rsvp-form')
 const rsvpSuccess = document.querySelector('#rsvp-success')
 if (rsvpForm) {

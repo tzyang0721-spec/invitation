@@ -91,7 +91,7 @@
           <article><time>19:30</time><div><b>蓝洞派对</b><span>特别环节 · 终极派对</span></div><strong>★★★</strong></article>
           <div class="menu-total"><span>LOVE POINT</span><b>MAX</b></div>
         </div>
-        <div class="countdown-card reveal"><span>距离这次特别任务还有<i>NEXT DIVE IN</i></span><b id="days-count">--</b><small>天<br />DAYS</small></div>
+        <div class="countdown-card reveal"><span>距离这次特别任务还有</span><b id="days-count">--</b><small>NEXT DIVE IN · DAYS</small></div>
       </section>
 
       <section class="dress-code story-section" id="dress-code">
@@ -112,7 +112,7 @@
         <article class="map-console reveal">
           <div class="map-grid" aria-hidden="true"></div><div class="map-pulse" aria-hidden="true"><i></i><b>♥</b></div>
           <p class="coordinate">MEETING POINT</p><h3>天津市 睦南宴会花园·宴会厅</h3><p>点击下方按钮，即可使用地图导航前往。</p>
-          <a href="https://surl.amap.com/hMfBA9IJ4zK" target="_blank" rel="noopener noreferrer">打开高德地图 <span>↗</span></a>
+          <button class="map-open" id="map-open" type="button">选择导航方式 <span>↗</span></button>
         </article>
       </section>
 
@@ -140,6 +140,14 @@
       <footer><img src="./assets/wedding-invitation-logo.png" alt="WEDDING INVITATION" /><p>WEDDING INVITATION</p></footer>
     </main>
 
+    <div class="map-sheet" id="map-sheet" hidden>
+      <div class="map-sheet-backdrop" data-map-close="true"></div>
+      <section class="map-sheet-panel" role="dialog" aria-modal="true" aria-labelledby="map-sheet-title">
+        <p>MEETING POINT</p><h2 id="map-sheet-title">选择地图导航</h2><span>天津市 睦南宴会花园·宴会厅</span>
+        <a id="map-system" href="#">系统地图（推荐）</a><a href="https://surl.amap.com/hMfBA9IJ4zK" target="_blank" rel="noopener noreferrer">高德地图</a><a id="map-baidu" href="#" target="_blank" rel="noopener noreferrer">百度地图</a><a id="map-tencent" href="#" target="_blank" rel="noopener noreferrer">腾讯地图</a><a id="map-apple" href="#" target="_blank" rel="noopener noreferrer">苹果地图</a>
+        <button id="map-close" type="button">取消</button>
+      </section>
+    </div>
     <nav class="quick-nav" aria-label="快捷导航"><a href="#briefing">任务</a><a href="#schedule">日程</a><a href="#arrival">地图</a><a href="#rsvp">登记</a></nav>
     <div class="music-dock">
       <audio id="official-bgm" preload="metadata" loop playsinline src="https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/81/7c/fc/817cfcb4-e07a-c9ee-21cc-2fe61ff00906/mzaf_12705664676681936623.plus.aac.p.m4a"></audio>
