@@ -80,7 +80,7 @@ document.querySelector('#sonar-button').addEventListener('click', () => {
 const fishField = document.querySelector('#fish-field')
 const fishCount = document.querySelector('#fish-count')
 const fishColors = ['#ffbd45', '#ff6474', '#82e7de', '#b0ef4d', '#f88ed8']
-const fishBlessings = ['祝您暴富', '祝您永远不死', '祝您美若天仙（已经是了）', '祝您发东南西北旋风财', '祝您早日实现财富自由']
+const fishBlessings = ['谢谢你来，今天更完整。', '愿你也被温柔以待。', '有你在场，格外开心。', '愿你的日子常有欢喜。', '谢谢你，见证这一刻。', '愿你所盼，如期而至。', '愿你身边，常有真心。', '谢谢你，把时间留给我们。', '愿你一路有光，也有爱。', '见到你，真好。', '愿你被爱，也被理解。', '谢谢你，让今天更温暖。', '愿平凡日子，也闪闪发光。', '愿你自在，也愿你幸福。', '这份喜悦，想和你分享。', '愿所有奔赴，都值得。']
 let caught = 0
 function showFishBlessing(fish) {
   if (Math.random() > 0.72) return
