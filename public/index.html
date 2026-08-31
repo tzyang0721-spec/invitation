@@ -25,9 +25,23 @@
     <link rel="icon" type="image/png" href="./assets/wedding-invitation-logo.png" />
     <link rel="stylesheet" href="./style.css" />
     <script>
-      if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
-      window.scrollTo(0, 0)
-      window.addEventListener('pageshow', () => window.scrollTo(0, 0))
+      (() => {
+        if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
+        if (location.hash) history.replaceState(null, '', `${location.pathname}${location.search}`)
+        const startAtTop = () => {
+          document.documentElement.scrollTop = 0
+          document.body.scrollTop = 0
+          window.scrollTo(0, 0)
+        }
+        startAtTop()
+        window.addEventListener('DOMContentLoaded', startAtTop, { once: true })
+        window.addEventListener('pageshow', () => {
+          startAtTop()
+          requestAnimationFrame(startAtTop)
+          window.setTimeout(startAtTop, 120)
+          window.setTimeout(startAtTop, 420)
+        })
+      })()
     </script>
     <script type="module" src="./app.js"></script>
   </head>
