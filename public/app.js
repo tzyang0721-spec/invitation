@@ -158,7 +158,6 @@ if (mapOpen && mapSheet) {
   const closeMapSheet = () => { mapSheet.hidden = true; mapStatus.hidden = true; mapOpen.focus() }
   mapOpen.addEventListener('click', () => { mapSheet.hidden = false; document.querySelector('#map-copy').focus() })
   document.querySelector('#map-copy').addEventListener('click', copyVenue)
-  document.querySelector('#map-tencent').addEventListener('click', copyVenue)
   document.querySelector('#map-close').addEventListener('click', closeMapSheet)
   mapSheet.querySelector('[data-map-close]').addEventListener('click', closeMapSheet)
 }
