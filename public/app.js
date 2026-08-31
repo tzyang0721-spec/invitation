@@ -154,8 +154,13 @@ if (rsvpForm) {
   const rsvpError = document.querySelector('#rsvp-error')
   const rsvpSuccessTitle = document.querySelector('#rsvp-success-title')
   const rsvpSuccessSummary = document.querySelector('#rsvp-success-summary')
+  const rsvpTicket = document.querySelector('#rsvp-ticket')
+  const rsvpTicketPreview = document.querySelector('#rsvp-ticket-preview')
+  const rsvpTicketSave = document.querySelector('#rsvp-ticket-save')
   const rsvpSubmit = rsvpForm.querySelector('[type="submit"]')
   const storageKey = 'deep-sea-wedding-rsvp-credentials'
+  // 以后补充婚礼照片时，把文件放进 public/assets/invitation-backgrounds/，并把路径加入这里。
+  const invitationBackgrounds = ['./assets/dave-key-art-clean.png', './assets/sea-exploration.webp', './assets/sushi-service.webp', './assets/dave-dive.webp']
   let savedRsvp
   try { savedRsvp = JSON.parse(localStorage.getItem(storageKey)) } catch { savedRsvp = undefined }
   function updateAccommodation() {
@@ -170,6 +175,35 @@ if (rsvpForm) {
     rsvpForm.elements.checkInAt.value = data.checkInAt || '2026-09-30T14:00'; rsvpForm.elements.checkOutAt.value = data.checkOutAt || '2026-10-02T12:00'; messageCount.value = String(rsvpForm.elements.message.value.length); updateAccommodation()
   }
   function showRsvpError(message) { rsvpError.textContent = message; rsvpError.hidden = false }
+  function loadTicketImage(source) {
+    return new Promise((resolve, reject) => { const image = new Image(); image.onload = () => resolve(image); image.onerror = reject; image.src = source })
+  }
+  async function generateRsvpTicket(data) {
+    if (!rsvpTicket || !rsvpTicketPreview || !rsvpTicketSave) return
+    rsvpTicket.hidden = true
+    const canvas = document.createElement('canvas'); canvas.width = 1080; canvas.height = 1440
+    const context = canvas.getContext('2d'); const source = invitationBackgrounds[Math.floor(Math.random() * invitationBackgrounds.length)]
+    try {
+      const background = await loadTicketImage(source); const scale = Math.max(canvas.width / background.width, canvas.height / background.height)
+      const width = background.width * scale; const height = background.height * scale
+      context.drawImage(background, (canvas.width - width) / 2, (canvas.height - height) / 2, width, height)
+    } catch { context.fillStyle = '#063d66'; context.fillRect(0, 0, canvas.width, canvas.height) }
+    context.fillStyle = 'rgba(1, 21, 43, .72)'; context.fillRect(0, 0, canvas.width, canvas.height)
+    context.strokeStyle = '#82f5ef'; context.lineWidth = 10; context.strokeRect(58, 58, 964, 1324)
+    context.strokeStyle = '#ffe04c'; context.lineWidth = 4; context.strokeRect(80, 80, 920, 1280)
+    context.textAlign = 'center'; context.fillStyle = '#83f5ef'; context.font = '700 34px monospace'; context.fillText('BLUE HOLE WEDDING', 540, 230)
+    context.fillStyle = '#ffe04c'; context.font = '900 74px sans-serif'; context.fillText('赴 约 凭 证', 540, 354)
+    context.fillStyle = '#eaffff'; context.font = '700 37px sans-serif'; context.fillText('SPECIAL WEDDING MISSION', 540, 426)
+    context.fillStyle = 'rgba(1, 27, 51, .78)'; context.fillRect(142, 560, 796, 420)
+    context.strokeStyle = '#82f5ef'; context.lineWidth = 3; context.strokeRect(142, 560, 796, 420)
+    context.fillStyle = '#8cf4ef'; context.font = '700 29px monospace'; context.fillText('DIVER', 540, 652)
+    context.fillStyle = '#ffffff'; context.font = '900 70px sans-serif'; context.fillText(data.guestName.slice(0, 12), 540, 752)
+    context.fillStyle = '#8cf4ef'; context.font = '700 29px monospace'; context.fillText('CREW SIZE', 540, 838)
+    context.fillStyle = '#ffe04c'; context.font = '900 56px sans-serif'; context.fillText(`${data.partySize} 位宾客`, 540, 915)
+    context.fillStyle = '#eaffff'; context.font = '700 35px sans-serif'; context.fillText('2026.10.01 · 等你赴约', 540, 1145)
+    context.fillStyle = '#8cf4ef'; context.font = '700 28px monospace'; context.fillText('MISSION ACCEPTED', 540, 1220)
+    const imageUrl = canvas.toDataURL('image/jpeg', .92); rsvpTicketPreview.src = imageUrl; rsvpTicketSave.href = imageUrl; rsvpTicketSave.download = `blue-hole-wedding-${data.guestName || 'guest'}.jpg`; rsvpTicket.hidden = false
+  }
   function collectRsvp() {
     const formData = new FormData(rsvpForm); const guestName = String(formData.get('guestName') || '').trim(); const needsAccommodation = formData.get('needsAccommodation') === 'yes'; const checkInAt = String(formData.get('checkInAt') || ''); const checkOutAt = String(formData.get('checkOutAt') || '')
     if (!guestName) throw new Error('请填写宾客姓名。'); if (needsAccommodation && (!checkInAt || !checkOutAt)) throw new Error('请填写完整的住宿时间。'); if (needsAccommodation && checkOutAt <= checkInAt) throw new Error('退房时间必须晚于入住时间。')
@@ -189,7 +223,7 @@ if (rsvpForm) {
       if (!response.ok) throw new Error(result.error || '提交失败，请稍后重试。')
       savedRsvp = { ...submission, id: result.id || submission.id, editToken: result.editToken || submission.editToken }
       localStorage.setItem(storageKey, JSON.stringify(savedRsvp))
-      rsvpForm.hidden = true; rsvpSuccess.hidden = false; rsvpSuccessTitle.textContent = `${submission.guestName}，登记成功`; rsvpSuccessSummary.textContent = `已登记 ${submission.partySize} 人${submission.needsAccommodation ? ' · 已提交住宿需求' : ' · 无需住宿'}。你可以在这台设备上继续修改。`; rsvpSuccess.focus({ preventScroll: true })
+      rsvpForm.hidden = true; rsvpSuccess.hidden = false; rsvpSuccessTitle.textContent = `${submission.guestName}，登记成功`; rsvpSuccessSummary.textContent = `已登记 ${submission.partySize} 人${submission.needsAccommodation ? ' · 已提交住宿需求' : ' · 无需住宿'}。你可以在这台设备上继续修改。`; rsvpSuccess.focus({ preventScroll: true }); generateRsvpTicket(submission)
     } catch (error) { showRsvpError(error.message || '保存失败，请检查浏览器设置后重试。') }
     finally { rsvpSubmit.disabled = false; rsvpSubmit.querySelector('span').textContent = '提交赴约信息' }
   })
