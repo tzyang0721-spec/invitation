@@ -147,7 +147,7 @@ document.querySelector('#start-mission').addEventListener('click', () => { playM
 const mapOpen = document.querySelector('#map-open')
 const mapSheet = document.querySelector('#map-sheet')
 if (mapOpen && mapSheet) {
-  const venue = '天津市 睦南宴会花园·宴会厅'; const encodedVenue = encodeURIComponent(venue)
+  const venue = '天津市和平区大理道72号睦南宴会花园·宴会厅'; const encodedVenue = encodeURIComponent(venue)
   const mapStatus = document.querySelector('#map-sheet-status')
   const copyVenue = async () => {
     try { await navigator.clipboard.writeText(venue) } catch { const field = document.createElement('textarea'); field.value = venue; field.style.position = 'fixed'; field.style.opacity = '0'; document.body.append(field); field.select(); document.execCommand('copy'); field.remove() }

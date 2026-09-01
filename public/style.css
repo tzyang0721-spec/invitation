@@ -19,3 +19,4 @@
 .privacy-consent{display:flex!important;align-items:flex-start;gap:8px;margin:0 0 14px!important;color:#b8dded!important;font-size:10px!important;line-height:1.55}.privacy-consent input{width:16px!important;height:16px!important;flex:none;margin:1px 0 0}.privacy-consent span{margin:0!important;color:inherit!important;font:inherit!important}
 .privacy-details{margin:-7px 0 15px;color:#94cbd4;font-size:9px;line-height:1.65}.privacy-details summary{width:max-content;color:#83f3ed;cursor:pointer;font:900 9px/1.5 monospace}.privacy-details p{margin:7px 0 0;padding:8px;border-left:2px solid #4c9ba1;background:#061d35}.accommodation-tip{margin:-1px 0 9px;color:#b8dded;font-size:10px;line-height:1.55}
 .mission-card>p{margin-bottom:3px}.mission-card>p:last-of-type{margin-bottom:15px}
+.hero-venue,.venue-one-line{white-space:normal;line-height:1.35}
