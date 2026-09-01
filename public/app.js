@@ -1,3 +1,19 @@
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
+if (location.hash) history.replaceState(null, '', `${location.pathname}${location.search}`)
+const startAtTop = () => {
+  document.documentElement.scrollTop = 0
+  document.body.scrollTop = 0
+  window.scrollTo(0, 0)
+}
+startAtTop()
+window.addEventListener('DOMContentLoaded', startAtTop, { once: true })
+window.addEventListener('pageshow', () => {
+  startAtTop()
+  requestAnimationFrame(startAtTop)
+  window.setTimeout(startAtTop, 120)
+  window.setTimeout(startAtTop, 420)
+})
+
 const weddingDate = new Date('2026-10-01T16:58:00+08:00')
 // 需要真实收集宾客名单时，只需粘贴第三方表单的公开填写链接；留空则保持本地演示模式。
 const RSVP_FORM_URL = ''
