@@ -24,7 +24,12 @@ function updateCountdown() {
   document.querySelector('#days-count').textContent = String(Math.max(0, Math.round((weddingCalendarDay - today) / 86400000)))
 }
 updateCountdown()
-window.setInterval(updateCountdown, 3600000)
+function scheduleCountdownAtMidnight() {
+  const now = Date.now(); const shanghaiOffset = 8 * 60 * 60 * 1000; const day = 24 * 60 * 60 * 1000
+  const nextMidnight = (Math.floor((now + shanghaiOffset) / day) + 1) * day - shanghaiOffset
+  window.setTimeout(() => { updateCountdown(); scheduleCountdownAtMidnight() }, Math.max(1000, nextMidnight - now + 50))
+}
+scheduleCountdownAtMidnight()
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 const revealElements = document.querySelectorAll('.reveal')
