@@ -14,10 +14,17 @@ window.addEventListener('pageshow', () => {
   window.setTimeout(startAtTop, 420)
 })
 
-const weddingDate = new Date('2026-10-01T16:58:00+08:00')
 // 需要真实收集宾客名单时，只需粘贴第三方表单的公开填写链接；留空则保持本地演示模式。
 const RSVP_FORM_URL = ''
-document.querySelector('#days-count').textContent = String(Math.max(0, Math.ceil((weddingDate.getTime() - Date.now()) / 86400000)))
+const weddingCalendarDay = Date.UTC(2026, 9, 1)
+const shanghaiDateFormatter = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit' })
+function updateCountdown() {
+  const parts = Object.fromEntries(shanghaiDateFormatter.formatToParts(new Date()).filter((part) => part.type !== 'literal').map((part) => [part.type, part.value]))
+  const today = Date.UTC(Number(parts.year), Number(parts.month) - 1, Number(parts.day))
+  document.querySelector('#days-count').textContent = String(Math.max(0, Math.round((weddingCalendarDay - today) / 86400000)))
+}
+updateCountdown()
+window.setInterval(updateCountdown, 60000)
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 const revealElements = document.querySelectorAll('.reveal')
