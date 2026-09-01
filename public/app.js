@@ -199,33 +199,45 @@ if (rsvpForm) {
   async function generateRsvpTicket(data) {
     if (!rsvpTicket || !rsvpTicketPreview || !rsvpTicketSave) return
     rsvpTicket.hidden = true
-    const canvas = document.createElement('canvas'); canvas.width = 1080; canvas.height = 1440
+    const canvas = document.createElement('canvas'); canvas.width = 1080; canvas.height = 1920
     const context = canvas.getContext('2d'); const source = invitationBackgrounds[Math.floor(Math.random() * invitationBackgrounds.length)]
     try {
       const background = await loadTicketImage(source); const scale = Math.max(canvas.width / background.width, canvas.height / background.height)
       const width = background.width * scale; const height = background.height * scale
       context.drawImage(background, (canvas.width - width) / 2, (canvas.height - height) / 2, width, height)
     } catch { context.fillStyle = '#063d66'; context.fillRect(0, 0, canvas.width, canvas.height) }
-    context.fillStyle = 'rgba(1, 21, 43, .72)'; context.fillRect(0, 0, canvas.width, canvas.height)
-    context.strokeStyle = '#82f5ef'; context.lineWidth = 10; context.strokeRect(58, 58, 964, 1324)
-    context.strokeStyle = '#ffe04c'; context.lineWidth = 4; context.strokeRect(80, 80, 920, 1280)
-    context.textAlign = 'center'; context.fillStyle = '#83f5ef'; context.font = '700 34px monospace'; context.fillText('OCEAN YES!', 540, 230)
-    context.fillStyle = '#ffe04c'; context.font = '900 74px sans-serif'; context.fillText('赴 约 凭 证', 540, 354)
-    context.fillStyle = '#eaffff'; context.font = '700 37px sans-serif'; context.fillText('SPECIAL WEDDING MISSION', 540, 426)
-    context.fillStyle = 'rgba(1, 27, 51, .78)'; context.fillRect(122, 520, 836, 590)
-    context.strokeStyle = '#82f5ef'; context.lineWidth = 3; context.strokeRect(122, 520, 836, 590)
-    const crewNo = Number(data.crewNo) > 0 ? `#${String(data.crewNo).padStart(3, '0')}` : '#---'
-    const drawField = (label, value, y, color = '#ffffff', font = '900 46px "Microsoft YaHei", sans-serif') => {
-      context.textAlign = 'left'; context.fillStyle = '#8cf4ef'; context.font = '700 27px monospace'; context.fillText(label, 190, y)
-      context.fillStyle = color; context.font = font; context.fillText(value, 190, y + 55)
+    const seaShade = context.createLinearGradient(0, 0, 0, 1920)
+    seaShade.addColorStop(0, 'rgba(1, 19, 39, .54)'); seaShade.addColorStop(.6, 'rgba(1, 19, 39, .82)'); seaShade.addColorStop(1, 'rgba(1, 12, 29, .96)')
+    context.fillStyle = seaShade; context.fillRect(0, 0, canvas.width, canvas.height)
+    context.fillStyle = 'rgba(132, 244, 236, .16)'; context.fillRect(0, 140, 8, 1640); context.fillRect(1072, 140, 8, 1640)
+    const cutCard = (x, y, width, height, cut) => {
+      context.beginPath(); context.moveTo(x + cut, y); context.lineTo(x + width - cut, y); context.lineTo(x + width, y + cut); context.lineTo(x + width, y + height - cut); context.lineTo(x + width - cut, y + height); context.lineTo(x + cut, y + height); context.lineTo(x, y + height - cut); context.lineTo(x, y + cut); context.closePath()
     }
-    drawField('DIVER NAME', data.guestName.slice(0, 12), 620, '#ffffff', '900 58px "Microsoft YaHei", sans-serif')
-    drawField('MISSION DATE', '2026.10.01', 755, '#ffe04c')
-    drawField('MEETING POINT', '睦南宴会花园', 890, '#ffffff')
-    drawField('CREW NO.', crewNo, 1025, '#ffe04c', '900 52px monospace')
+    cutCard(79, 352, 922, 1218, 28); context.fillStyle = '#07192a'; context.fill(); context.translate(0, -9)
+    cutCard(79, 352, 922, 1218, 28); context.fillStyle = '#eeeae0'; context.fill(); context.translate(0, 9)
+    cutCard(92, 365, 896, 1192, 22); context.strokeStyle = '#4a9da4'; context.lineWidth = 4; context.stroke()
+    context.fillStyle = '#123a54'; context.fillRect(110, 392, 860, 116)
+    context.textAlign = 'center'; context.fillStyle = '#8eece4'; context.font = '700 26px monospace'; context.fillText('BLUE HOLE WEDDING MISSION', 540, 436)
+    context.fillStyle = '#fff0b8'; context.font = '900 39px "Microsoft YaHei", sans-serif'; context.fillText('赴 约 通 行 证', 540, 481)
+    context.fillStyle = '#b7b0a4'; context.fillRect(128, 552, 824, 2)
+    context.fillStyle = '#5d5b52'; context.font = '700 24px monospace'; context.fillText('DIVER NAME', 540, 630)
+    context.fillStyle = '#1d4353'; context.font = '900 76px "Microsoft YaHei", sans-serif'; context.fillText(data.guestName.slice(0, 12), 540, 730)
+    context.fillStyle = '#998a69'; context.font = '700 26px "Microsoft YaHei", sans-serif'; context.fillText('完成任务，获得本次特别相聚的登船许可', 540, 785)
+    const crewNo = Number(data.crewNo) > 0 ? `#${String(data.crewNo).padStart(3, '0')}` : '#---'
+    const drawField = (x, y, label, value, color = '#1d4353', font = '900 39px "Microsoft YaHei", sans-serif') => {
+      context.textAlign = 'left'; context.fillStyle = '#75857d'; context.font = '700 22px monospace'; context.fillText(label, x, y)
+      context.fillStyle = color; context.font = font; context.fillText(value, x, y + 52)
+    }
+    drawField(176, 904, 'MISSION DATE', '2026.10.01')
+    drawField(610, 904, 'CREW NO.', crewNo, '#bf7d35', '900 44px monospace')
+    context.fillStyle = '#c7c0b2'; context.fillRect(540, 865, 2, 136)
+    drawField(176, 1082, 'MEETING POINT', '睦南宴会花园')
+    drawField(610, 1082, 'PARTY', `${data.partySize} DIVER${data.partySize > 1 ? 'S' : ''}`, '#1d4353', '900 34px monospace')
+    context.setLineDash([12, 10]); context.strokeStyle = '#b7b0a4'; context.lineWidth = 2; context.beginPath(); context.moveTo(128, 1210); context.lineTo(952, 1210); context.stroke(); context.setLineDash([])
     context.textAlign = 'center'
-    context.fillStyle = '#eaffff'; context.font = '700 35px sans-serif'; context.fillText('2026.10.01 · 等你赴约', 540, 1145)
-    context.fillStyle = '#8cf4ef'; context.font = '700 28px monospace'; context.fillText('MISSION ACCEPTED', 540, 1220)
+    context.fillStyle = '#7b7467'; context.font = '700 27px "Microsoft YaHei", sans-serif'; context.fillText('请凭此证赴约 · 2026.10.01', 540, 1302)
+    context.save(); context.translate(540, 1400); context.rotate(-.055); context.strokeStyle = '#bd7b38'; context.lineWidth = 6; context.strokeRect(-218, -57, 436, 114); context.fillStyle = '#bd7b38'; context.font = '900 39px monospace'; context.fillText('MISSION ACCEPTED', 0, 13); context.restore()
+    context.fillStyle = '#607c79'; context.font = '700 22px monospace'; context.fillText('OCEAN YES! · WEDDING CREW', 540, 1505)
     const imageUrl = canvas.toDataURL('image/jpeg', .92); rsvpTicketPreview.src = imageUrl; rsvpTicketSave.href = imageUrl; rsvpTicketSave.download = `blue-hole-wedding-${data.guestName || 'guest'}.jpg`; rsvpTicket.hidden = false
   }
   function collectRsvp() {
