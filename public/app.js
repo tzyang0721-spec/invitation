@@ -24,7 +24,7 @@ function updateCountdown() {
   document.querySelector('#days-count').textContent = String(Math.max(0, Math.round((weddingCalendarDay - today) / 86400000)))
 }
 updateCountdown()
-window.setInterval(updateCountdown, 60000)
+window.setInterval(updateCountdown, 3600000)
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 const revealElements = document.querySelectorAll('.reveal')
