@@ -212,12 +212,18 @@ if (rsvpForm) {
     context.textAlign = 'center'; context.fillStyle = '#83f5ef'; context.font = '700 34px monospace'; context.fillText('OCEAN YES!', 540, 230)
     context.fillStyle = '#ffe04c'; context.font = '900 74px sans-serif'; context.fillText('赴 约 凭 证', 540, 354)
     context.fillStyle = '#eaffff'; context.font = '700 37px sans-serif'; context.fillText('SPECIAL WEDDING MISSION', 540, 426)
-    context.fillStyle = 'rgba(1, 27, 51, .78)'; context.fillRect(142, 560, 796, 420)
-    context.strokeStyle = '#82f5ef'; context.lineWidth = 3; context.strokeRect(142, 560, 796, 420)
-    context.fillStyle = '#8cf4ef'; context.font = '700 29px monospace'; context.fillText('DIVER', 540, 652)
-    context.fillStyle = '#ffffff'; context.font = '900 70px sans-serif'; context.fillText(data.guestName.slice(0, 12), 540, 752)
-    context.fillStyle = '#8cf4ef'; context.font = '700 29px monospace'; context.fillText('CREW SIZE', 540, 838)
-    context.fillStyle = '#ffe04c'; context.font = '900 56px sans-serif'; context.fillText(`${data.partySize} 位宾客`, 540, 915)
+    context.fillStyle = 'rgba(1, 27, 51, .78)'; context.fillRect(122, 520, 836, 590)
+    context.strokeStyle = '#82f5ef'; context.lineWidth = 3; context.strokeRect(122, 520, 836, 590)
+    const crewNo = Number(data.crewNo) > 0 ? `#${String(data.crewNo).padStart(3, '0')}` : '#---'
+    const drawField = (label, value, y, color = '#ffffff', font = '900 46px "Microsoft YaHei", sans-serif') => {
+      context.textAlign = 'left'; context.fillStyle = '#8cf4ef'; context.font = '700 27px monospace'; context.fillText(label, 190, y)
+      context.fillStyle = color; context.font = font; context.fillText(value, 190, y + 55)
+    }
+    drawField('DIVER NAME', data.guestName.slice(0, 12), 620, '#ffffff', '900 58px "Microsoft YaHei", sans-serif')
+    drawField('MISSION DATE', '2026.10.01', 755, '#ffe04c')
+    drawField('MEETING POINT', '睦南宴会花园', 890, '#ffffff')
+    drawField('CREW NO.', crewNo, 1025, '#ffe04c', '900 52px monospace')
+    context.textAlign = 'center'
     context.fillStyle = '#eaffff'; context.font = '700 35px sans-serif'; context.fillText('2026.10.01 · 等你赴约', 540, 1145)
     context.fillStyle = '#8cf4ef'; context.font = '700 28px monospace'; context.fillText('MISSION ACCEPTED', 540, 1220)
     const imageUrl = canvas.toDataURL('image/jpeg', .92); rsvpTicketPreview.src = imageUrl; rsvpTicketSave.href = imageUrl; rsvpTicketSave.download = `blue-hole-wedding-${data.guestName || 'guest'}.jpg`; rsvpTicket.hidden = false
@@ -225,7 +231,7 @@ if (rsvpForm) {
   function collectRsvp() {
     const formData = new FormData(rsvpForm); const guestName = String(formData.get('guestName') || '').trim(); const needsAccommodation = formData.get('needsAccommodation') === 'yes'; const checkInAt = String(formData.get('checkInAt') || ''); const checkOutAt = String(formData.get('checkOutAt') || '')
     if (!guestName) throw new Error('请填写宾客姓名。'); if (needsAccommodation && (!checkInAt || !checkOutAt)) throw new Error('请填写完整的住宿时间。'); if (needsAccommodation && checkOutAt <= checkInAt) throw new Error('退房时间必须晚于入住时间。')
-    return { id: savedRsvp?.id, editToken: savedRsvp?.editToken, guestName, partySize: Number(formData.get('partySize')), needsAccommodation, checkInAt: needsAccommodation ? checkInAt : null, checkOutAt: needsAccommodation ? checkOutAt : null, phone: String(formData.get('phone') || '').trim(), message: String(formData.get('message') || '').trim(), privacyConsent: formData.get('privacyConsent') === 'on' }
+    return { id: savedRsvp?.id, editToken: savedRsvp?.editToken, crewNo: savedRsvp?.crewNo, guestName, partySize: Number(formData.get('partySize')), needsAccommodation, checkInAt: needsAccommodation ? checkInAt : null, checkOutAt: needsAccommodation ? checkOutAt : null, phone: String(formData.get('phone') || '').trim(), message: String(formData.get('message') || '').trim(), privacyConsent: formData.get('privacyConsent') === 'on' }
   }
   rsvpForm.addEventListener('change', (event) => { if (event.target.name === 'needsAccommodation') { accommodationField.removeAttribute('aria-invalid'); updateAccommodation() } })
   messageField.addEventListener('input', () => { messageCount.value = String(messageField.value.length) })
@@ -239,9 +245,9 @@ if (rsvpForm) {
       const response = await fetch(endpoint, { method: submission.id && submission.editToken ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(submission) })
       const result = await response.json().catch(() => ({}))
       if (!response.ok) throw new Error(result.error || '提交失败，请稍后重试。')
-      savedRsvp = { ...submission, id: result.id || submission.id, editToken: result.editToken || submission.editToken }
+      savedRsvp = { ...submission, id: result.id || submission.id, editToken: result.editToken || submission.editToken, crewNo: result.crewNo || submission.crewNo }
       localStorage.setItem(storageKey, JSON.stringify(savedRsvp))
-      rsvpForm.hidden = true; rsvpSuccess.hidden = false; rsvpSuccessTitle.textContent = `${submission.guestName}，登记成功`; rsvpSuccessSummary.textContent = `已登记 ${submission.partySize} 人${submission.needsAccommodation ? ' · 已提交住宿需求' : ' · 无需住宿'}。你可以在这台设备上继续修改。`; rsvpSuccess.focus({ preventScroll: true }); generateRsvpTicket(submission)
+      rsvpForm.hidden = true; rsvpSuccess.hidden = false; rsvpSuccessTitle.textContent = `${submission.guestName}，登记成功`; rsvpSuccessSummary.textContent = `已登记 ${submission.partySize} 人${submission.needsAccommodation ? ' · 已提交住宿需求' : ' · 无需住宿'}。你可以在这台设备上继续修改。`; rsvpSuccess.focus({ preventScroll: true }); generateRsvpTicket(savedRsvp)
     } catch (error) { showRsvpError(error.message || '保存失败，请检查浏览器设置后重试。') }
     finally { rsvpSubmit.disabled = false; rsvpSubmit.querySelector('span').textContent = '提交赴约信息' }
   })

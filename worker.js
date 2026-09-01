@@ -48,7 +48,12 @@ async function createRsvp(request, env) {
   const entry = submissionFrom(await readJson(request)); const id = crypto.randomUUID(); const editToken = token()
   await env.DB.prepare('INSERT INTO wedding_rsvps (id, edit_token_hash, guest_name, party_size, needs_accommodation, check_in_at, check_out_at, phone, message) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
     .bind(id, await hash(editToken), entry.guestName, entry.partySize, entry.needsAccommodation ? 1 : 0, entry.checkInAt, entry.checkOutAt, entry.phone || null, entry.message || null).run()
-  return json({ id, editToken }, 201)
+  return json({ id, editToken, crewNo: await crewNumberFor(env, id) }, 201)
+}
+
+async function crewNumberFor(env, id) {
+  const result = await env.DB.prepare('SELECT COUNT(*) AS crew_no FROM wedding_rsvps WHERE rowid <= (SELECT rowid FROM wedding_rsvps WHERE id = ?)').bind(id).first()
+  return Number(result?.crew_no || 0)
 }
 
 async function updateRsvp(request, env, id) {
@@ -57,7 +62,7 @@ async function updateRsvp(request, env, id) {
   const result = await env.DB.prepare('UPDATE wedding_rsvps SET guest_name = ?, party_size = ?, needs_accommodation = ?, check_in_at = ?, check_out_at = ?, phone = ?, message = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND edit_token_hash = ?')
     .bind(entry.guestName, entry.partySize, entry.needsAccommodation ? 1 : 0, entry.checkInAt, entry.checkOutAt, entry.phone || null, entry.message || null, id, await hash(editToken)).run()
   if (!result.meta.changes) return json({ error: '修改凭据无效，请联系新人。' }, 403)
-  return json({ id })
+  return json({ id, crewNo: await crewNumberFor(env, id) })
 }
 
 function secure(response, request) {
